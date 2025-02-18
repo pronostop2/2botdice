@@ -1,3 +1,6 @@
+from flask import Flask
+   from threading import Thread
+   import os
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters, CallbackContext
 
@@ -5,6 +8,18 @@ TOKEN = "7610262736:AAHYgaBJxJJuoyDcPDzikhSODiPlg0Hs2yI"
 
 # ID de l'administrateur (ton ID Telegram)
 ADMIN_ID = 6111033488 # Ton vrai ID Telegram
+
+app = Flask(__name__)
+
+   @app.route('/')
+   def home():
+       return "🤖 Bot Dice Predict actif !"
+
+   def run():
+       app.run(host='0.0.0.0', port=10000)
+
+   def keep_alive():
+       Thread(target=run).start()
 
 # Liste pour stocker les utilisateurs inscrits
 users = set()
@@ -139,8 +154,11 @@ async def envoyer_annonce(update: Update, context: CallbackContext):
 
     await update.message.reply_text("📢 Annonce envoyée à tous les utilisateurs.")
 
-
 # Initialisation du bot
+
+if __name__ == "__main__":
+       keep_alive()  # Démarrer le serveur web
+       main()  # Démarrer le bot
 def main():
     print("Le bot est en cours d'exécution...")
     app = Application.builder().token(TOKEN).build()
@@ -156,6 +174,3 @@ def main():
     app.add_handler(MessageHandler(filters.Text("𝙍𝙀𝙏𝙊𝙐𝙍 🔙"), back_to_main_menu))
 
     app.run_polling()
-
-if __name__ == "__main__":
-    main()
